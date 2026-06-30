@@ -293,6 +293,8 @@ textarea{resize:vertical;min-height:60px;}
   *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
 }
 </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -426,6 +428,15 @@ textarea{resize:vertical;min-height:60px;}
 <div class="toast" id="toast"></div>
 
 <script>
+
+const SUPABASE_URL = "https://qanlnvrxjvxhyywsskdv.supabase.co/rest/v1/";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFhbmxudnJ4anZ4aHl5d3Nza2R2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4MjcyMDMsImV4cCI6MjA5ODQwMzIwM30.YEo7l2cplIt2NlHkEEEfbxPVelbCNydD8G-WTfhLggI";
+
+const supabase = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+  
 /* ============== DATA LAYER ============== */
 const STORAGE_KEY = 'kelimeAtolyesi.words.v1';
 const STATS_KEY = 'kelimeAtolyesi.stats.v1';
