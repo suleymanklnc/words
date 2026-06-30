@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelime Atölyesi — İngilizce Kelime Pratiği</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#120f1f;
+  --bg-soft:#1a1530;
+  --card:#211a3a;
+  --card-2:#291f47;
+  --ink:#f3f0ff;
+  --ink-dim:#a79fc9;
+  --purple:#8b5cf6;
+  --purple-2:#a78bfa;
+  --turquoise:#2dd4bf;
+  --orange:#fb923c;
+  --pink:#ec4899;
+  --good:#34d399;
+  --bad:#f87171;
+  --radius:20px;
+  --shadow-deep: 0 20px 50px -15px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;}
+html{-webkit-tap-highlight-color:transparent;}
+body{
+  margin:0;
+  font-family:'Inter',sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(139,92,246,.25), transparent 45%),
+    radial-gradient(circle at 85% 10%, rgba(45,212,191,.18), transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(251,146,60,.12), transparent 50%),
+    var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+h1,h2,h3,.display{font-family:'Space Grotesk',sans-serif;}
+
+#bgcanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;}
+
+.app{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:20px 18px 80px;}
+
+/* Header */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:46px;height:46px;border-radius:14px;
+  background:linear-gradient(135deg,var(--purple),var(--turquoise));
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;
+  box-shadow:0 10px 25px -8px rgba(139,92,246,.7), inset 0 1px 0 rgba(255,255,255,.3);
+  transform:perspective(300px) rotateX(8deg);
+}
+.brand h1{font-size:22px;margin:0;letter-spacing:-.02em;}
+.brand p{margin:0;color:var(--ink-dim);font-size:13px;}
+
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap;}
+.stat-pill{
+  background:var(--card);
+  border:1px solid rgba(255,255,255,.06);
+  padding:8px 14px;border-radius:999px;
+  font-size:13px;display:flex;align-items:center;gap:6px;
+  box-shadow:var(--shadow-deep);
+}
+.stat-pill b{font-family:'Space Grotesk',sans-serif;color:var(--turquoise);}
+
+/* Nav tabs */
+nav.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:22px;scrollbar-width:none;}
+nav.tabs::-webkit-scrollbar{display:none;}
+.tab-btn{
+  flex:0 0 auto;
+  background:var(--card);
+  color:var(--ink-dim);
+  border:1px solid rgba(255,255,255,.06);
+  padding:10px 18px;border-radius:14px;
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;
+  cursor:pointer;transition:transform .15s ease, box-shadow .15s ease, color .15s ease, background .15s ease;
+  white-space:nowrap;
+}
+.tab-btn:hover{transform:translateY(-2px);box-shadow:0 8px 18px -8px rgba(139,92,246,.5);}
+.tab-btn:active{transform:translateY(0px) scale(.97);}
+.tab-btn.active{
+  color:#0f0c1d;
+  background:linear-gradient(135deg,var(--turquoise),var(--purple-2));
+  border-color:transparent;
+  box-shadow:0 10px 25px -8px rgba(45,212,191,.55);
+}
+
+section.view{display:none;animation:fadeUp .35s ease both;}
+section.view.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+/* Generic card */
+.panel{
+  background:linear-gradient(180deg,var(--card),var(--card-2));
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:var(--radius);
+  padding:22px;
+  box-shadow:var(--shadow-deep);
+}
+.panel + .panel{margin-top:18px;}
+.panel h2{margin:0 0 16px;font-size:18px;display:flex;align-items:center;gap:8px;}
+
+/* Forms */
+label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:5px;font-weight:600;letter-spacing:.02em;}
+.field{margin-bottom:14px;}
+input[type=text],textarea,select{
+  width:100%;
+  background:var(--bg-soft);
+  border:1px solid rgba(255,255,255,.1);
+  color:var(--ink);
+  padding:11px 13px;border-radius:11px;
+  font-family:'Inter',sans-serif;font-size:14px;
+  outline:none;transition:border-color .15s ease, box-shadow .15s ease;
+}
+input[type=text]:focus,textarea:focus,select:focus{
+  border-color:var(--turquoise);
+  box-shadow:0 0 0 3px rgba(45,212,191,.18);
+}
+textarea{resize:vertical;min-height:60px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:560px){.grid2{grid-template-columns:1fr;}}
+
+.btn{
+  font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14px;
+  border:none;border-radius:13px;padding:12px 20px;cursor:pointer;
+  color:#0f0c1d;background:linear-gradient(135deg,var(--orange),var(--pink));
+  box-shadow:0 12px 24px -10px rgba(251,146,60,.6), inset 0 1px 0 rgba(255,255,255,.4);
+  transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.07);}
+.btn:active{transform:translateY(1px) scale(.97);box-shadow:0 4px 10px -4px rgba(251,146,60,.5);}
+.btn.secondary{
+  background:var(--bg-soft);color:var(--ink);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:none;
+}
+.btn.ghost{background:transparent;color:var(--ink-dim);border:1px dashed rgba(255,255,255,.2);box-shadow:none;}
+.btn.small{padding:7px 13px;font-size:12.5px;border-radius:10px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+/* Word list */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+.toolbar input,.toolbar select{width:auto;flex:1;min-width:140px;}
+
+.word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.word-card{
+  background:var(--bg-soft);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;padding:16px;
+  transition:transform .18s ease, box-shadow .18s ease;
+  position:relative;
+}
+.word-card:hover{transform:translateY(-4px) rotateX(2deg);box-shadow:0 18px 30px -14px rgba(139,92,246,.4);}
+.word-card .en{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;}
+.word-card .tr{color:var(--turquoise);font-size:14px;margin-top:2px;}
+.word-card .ex{color:var(--ink-dim);font-size:12.5px;margin-top:8px;font-style:italic;}
+.tag{
+  display:inline-block;font-size:10.5px;background:rgba(139,92,246,.2);color:var(--purple-2);
+  padding:3px 9px;border-radius:999px;margin-top:8px;font-weight:600;
+}
+.box-badge{position:absolute;top:12px;right:12px;font-size:10px;color:var(--ink-dim);background:rgba(255,255,255,.05);padding:3px 8px;border-radius:999px;}
+.card-actions{display:flex;gap:6px;margin-top:12px;}
+.empty-state{text-align:center;padding:50px 20px;color:var(--ink-dim);}
+.empty-state .big{font-size:42px;margin-bottom:10px;}
+
+/* Mode select grid */
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.mode-card{
+  cursor:pointer;border-radius:18px;padding:22px;
+  background:linear-gradient(160deg,var(--card),var(--card-2));
+  border:1px solid rgba(255,255,255,.07);
+  transition:transform .2s ease, box-shadow .2s ease;
+  position:relative;overflow:hidden;
+}
+.mode-card::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), transparent 60%);
+  opacity:0;transition:opacity .2s ease;
+}
+.mode-card:hover{transform:translateY(-6px) perspective(600px) rotateX(3deg);box-shadow:0 22px 40px -16px rgba(139,92,246,.5);}
+.mode-card:hover::after{opacity:1;}
+.mode-card:active{transform:translateY(-2px) scale(.98);}
+.mode-icon{font-size:30px;margin-bottom:10px;display:block;}
+.mode-card h3{margin:0 0 6px;font-size:16px;}
+.mode-card p{margin:0;color:var(--ink-dim);font-size:13px;line-height:1.5;}
+
+/* Practice area */
+.practice-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.progress-track{flex:1;height:8px;background:var(--bg-soft);border-radius:999px;overflow:hidden;min-width:140px;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--turquoise),var(--purple));border-radius:999px;transition:width .3s ease;}
+
+.stage{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:340px;}
+
+/* Flashcard */
+.flip-scene{width:100%;max-width:380px;height:230px;perspective:1200px;margin:0 auto;}
+.flip-card{
+  width:100%;height:100%;position:relative;
+  transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.2,.2,1);
+  cursor:pointer;
+}
+.flip-card.flipped{transform:rotateY(180deg);}
+.face{
+  position:absolute;inset:0;border-radius:20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  backface-visibility:hidden;padding:24px;text-align:center;
+  box-shadow:0 25px 50px -18px rgba(0,0,0,.6);
+}
+.face.front{background:linear-gradient(150deg,var(--purple),#5b21b6);}
+.face.back{background:linear-gradient(150deg,var(--turquoise),#0d9488);transform:rotateY(180deg);}
+.face .word{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;}
+.face .sub{font-size:13px;opacity:.85;}
+.face .ex{font-size:13px;opacity:.9;margin-top:6px;font-style:italic;}
+
+.flash-actions{display:flex;gap:14px;margin-top:24px;}
+.know-btn{
+  border:none;border-radius:14px;padding:13px 22px;font-family:'Space Grotesk',sans-serif;font-weight:700;cursor:pointer;
+  transition:transform .12s ease;
+}
+.know-btn:active{transform:scale(.95);}
+.know-btn.yes{background:linear-gradient(135deg,var(--good),#059669);color:#06281c;}
+.know-btn.no{background:linear-gradient(135deg,var(--bad),#dc2626);color:#2c0606;}
+
+/* Quiz */
+.quiz-q{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;text-align:center;margin-bottom:24px;}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:480px;}
+@media(max-width:480px){.quiz-options{grid-template-columns:1fr;}}
+.opt-btn{
+  background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);color:var(--ink);
+  padding:14px 16px;border-radius:13px;font-size:14.5px;cursor:pointer;text-align:left;
+  transition:transform .12s ease, background .15s ease, border-color .15s ease;
+}
+.opt-btn:hover{transform:translateY(-2px);border-color:var(--purple-2);}
+.opt-btn.correct{background:rgba(52,211,153,.2);border-color:var(--good);}
+.opt-btn.wrong{background:rgba(248,113,113,.2);border-color:var(--bad);}
+.opt-btn:disabled{cursor:default;}
+
+/* Matching */
+.match-board{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:560px;}
+.match-col{display:flex;flex-direction:column;gap:10px;}
+.match-item{
+  background:var(--bg-soft);border:1px solid rgba(255,255,255,.1);
+  padding:12px 14px;border-radius:12px;cursor:pointer;font-size:14px;text-align:center;
+  transition:transform .12s ease, border-color .15s ease, background .15s ease;
+}
+.match-item.selected{border-color:var(--turquoise);background:rgba(45,212,191,.15);transform:scale(1.03);}
+.match-item.matched{opacity:.3;pointer-events:none;border-color:var(--good);}
+.match-item.shake{animation:shake .35s ease;border-color:var(--bad);}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+/* Fill blank */
+.fill-sentence{font-size:18px;text-align:center;line-height:1.7;max-width:480px;margin-bottom:20px;}
+.fill-sentence b{color:var(--turquoise);}
+.fill-input-row{display:flex;gap:10px;width:100%;max-width:380px;}
+.fill-input-row input{flex:1;}
+
+/* Result screen */
+.result-emoji{font-size:54px;text-align:center;}
+.result-score{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;text-align:center;background:linear-gradient(135deg,var(--turquoise),var(--purple-2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+.result-row{display:flex;justify-content:center;gap:28px;margin:18px 0;flex-wrap:wrap;}
+.result-row .item{text-align:center;}
+.result-row .num{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;}
+.result-row .lbl{font-size:12px;color:var(--ink-dim);}
+
+/* Badges / level */
+.badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;}
+.badge{
+  display:flex;align-items:center;gap:6px;
+  background:var(--bg-soft);border:1px solid rgba(255,255,255,.08);
+  padding:8px 12px;border-radius:999px;font-size:12.5px;
+}
+.badge .ic{font-size:16px;}
+
+/* Confetti */
+.confetti{position:fixed;top:-10px;width:8px;height:14px;z-index:50;pointer-events:none;border-radius:2px;}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--card);border:1px solid rgba(255,255,255,.1);
+  padding:12px 20px;border-radius:13px;font-size:14px;
+  box-shadow:var(--shadow-deep);z-index:60;opacity:0;transition:all .25s ease;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+::-webkit-scrollbar{width:8px;}
+::-webkit-scrollbar-thumb{background:var(--card-2);border-radius:8px;}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bgcanvas"></canvas>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">🧠</div>
+      <div>
+        <h1>Kelime Atölyesi</h1>
+        <p>İngilizce kelime hazinen için kişisel pratik alanı</p>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-pill">📚 <b id="statTotal">0</b> kelime</div>
+      <div class="stat-pill">🔥 <b id="statStreak">0</b> seri</div>
+      <div class="stat-pill">⭐ <b id="statXP">0</b> XP</div>
+      <div class="stat-pill">🏅 Seviye <b id="statLevel">1</b></div>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-view="add">➕ Kelime Ekle</button>
+    <button class="tab-btn" data-view="list">📋 Listem</button>
+    <button class="tab-btn" data-view="practice">🎮 Pratik Yap</button>
+  </nav>
+
+  <!-- ADD VIEW -->
+  <section class="view active" id="view-add">
+    <div class="panel">
+      <h2>✍️ Yeni Kelime / İfade Ekle</h2>
+      <div class="grid2">
+        <div class="field">
+          <label>İngilizce kelime / ifade *</label>
+          <input type="text" id="inEn" placeholder="örn. accomplish">
+        </div>
+        <div class="field">
+          <label>Türkçe anlamı *</label>
+          <input type="text" id="inTr" placeholder="örn. başarmak">
+        </div>
+      </div>
+      <div class="field">
+        <label>Örnek cümle (opsiyonel)</label>
+        <textarea id="inEx" placeholder="örn. She managed to accomplish her goal."></textarea>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Kategori / etiket (opsiyonel)</label>
+          <input type="text" id="inTag" placeholder="örn. fiil, iş İngilizcesi">
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end;">
+          <button class="btn" id="btnAddWord" style="width:100%;">Kelimeyi Kaydet</button>
+        </div>
+      </div>
+      <p style="color:var(--ink-dim);font-size:12.5px;margin-top:6px;">* zorunlu alanlar. Veriler yalnızca bu tarayıcıda saklanır (localStorage), dışarı gönderilmez.</p>
+    </div>
+
+    <div class="panel">
+      <h2>🆕 Son Eklenenler</h2>
+      <div class="word-grid" id="recentGrid"></div>
+    </div>
+  </section>
+
+  <!-- LIST VIEW -->
+  <section class="view" id="view-list">
+    <div class="panel">
+      <h2>📋 Kelime Listem</h2>
+      <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="🔍 Kelime ara...">
+        <select id="filterTag"><option value="">Tüm kategoriler</option></select>
+      </div>
+      <div class="word-grid" id="allGrid"></div>
+    </div>
+  </section>
+
+  <!-- PRACTICE VIEW -->
+  <section class="view" id="view-practice">
+    <div class="panel" id="modeSelectPanel">
+      <h2>🎮 Bir Oyun Modu Seç</h2>
+      <div class="mode-grid">
+        <div class="mode-card" data-mode="flashcard">
+          <span class="mode-icon">🃏</span>
+          <h3>Flashcard</h3>
+          <p>Kartı çevir, anlamı gör, "biliyorum / bilmiyorum" işaretle.</p>
+        </div>
+        <div class="mode-card" data-mode="quiz">
+          <span class="mode-icon">🧩</span>
+          <h3>Çoktan Seçmeli Quiz</h3>
+          <p>4 şık arasından doğru Türkçe anlamı bul.</p>
+        </div>
+        <div class="mode-card" data-mode="match">
+          <span class="mode-icon">🔗</span>
+          <h3>Eşleştirme Oyunu</h3>
+          <p>İngilizce ve Türkçe kelimeleri tıklayarak eşleştir.</p>
+        </div>
+        <div class="mode-card" data-mode="fill">
+          <span class="mode-icon">✏️</span>
+          <h3>Boşluk Doldurma</h3>
+          <p>Örnek cümledeki boşluğa doğru kelimeyi yaz.</p>
+        </div>
+      </div>
+      <p style="color:var(--ink-dim);font-size:12.5px;margin-top:16px;">💡 Sistem, Leitner kutu yöntemiyle az bildiğin kelimeleri daha sık karşına çıkarır.</p>
+    </div>
+
+    <div class="panel" id="practicePanel" style="display:none;">
+      <div class="practice-head">
+        <button class="btn secondary small" id="btnExitPractice">← Modlara dön</button>
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+        <span id="progressLabel" style="font-size:13px;color:var(--ink-dim);">0/0</span>
+      </div>
+      <div class="stage" id="stage"></div>
+    </div>
+
+    <div class="panel" id="resultPanel" style="display:none;">
+      <div class="result-emoji" id="resultEmoji">🎉</div>
+      <div class="result-score" id="resultScore">0%</div>
+      <div class="result-row">
+        <div class="item"><div class="num" id="resCorrect" style="color:var(--good)">0</div><div class="lbl">Doğru</div></div>
+        <div class="item"><div class="num" id="resWrong" style="color:var(--bad)">0</div><div class="lbl">Yanlış</div></div>
+        <div class="item"><div class="num" id="resXP" style="color:var(--orange)">0</div><div class="lbl">Kazanılan XP</div></div>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" id="btnRetry">🔁 Tekrar Oyna</button>
+        <button class="btn secondary" id="btnBackModes">🎮 Diğer Modlar</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============== DATA LAYER ============== */
+const STORAGE_KEY = 'kelimeAtolyesi.words.v1';
+const STATS_KEY = 'kelimeAtolyesi.stats.v1';
+
+function uid(){ return 'w_' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function loadWords(){
+  try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }catch(e){ return []; }
+}
+function saveWords(words){ localStorage.setItem(STORAGE_KEY, JSON.stringify(words)); }
+
+function loadStats(){
+  try{
+    return JSON.parse(localStorage.getItem(STATS_KEY)) || {xp:0, streak:0, lastPlayDate:null};
+  }catch(e){ return {xp:0, streak:0, lastPlayDate:null}; }
+}
+function saveStats(s){ localStorage.setItem(STATS_KEY, JSON.stringify(s)); }
+
+let words = loadWords();
+let stats = loadStats();
+
+// seed example words on very first run
+if(words.length === 0 && localStorage.getItem('kelimeAtolyesi.seeded') !== '1'){
+  words = [
+    {id:uid(), en:'accomplish', tr:'başarmak', ex:'She managed to accomplish her goal.', tag:'fiil', box:1, lastSeen:null},
+    {id:uid(), en:'nevertheless', tr:'yine de', ex:'It was raining; nevertheless, we went out.', tag:'bağlaç', box:1, lastSeen:null},
+    {id:uid(), en:'reliable', tr:'güvenilir', ex:'He is a reliable friend.', tag:'sıfat', box:1, lastSeen:null},
+    {id:uid(), en:'in charge of', tr:'-den sorumlu', ex:'She is in charge of the project.', tag:'iş İngilizcesi', box:1, lastSeen:null},
+  ];
+  saveWords(words);
+  localStorage.setItem('kelimeAtolyesi.seeded','1');
+}
+
+function xpForLevel(level){ return level * 100; }
+function levelFromXP(xp){
+  let lvl = 1;
+  let needed = 100;
+  let remaining = xp;
+  while(remaining >= needed){ remaining -= needed; lvl++; needed = xpForLevel(lvl); }
+  return {level:lvl, into:remaining, needed};
+}
+
+function addXP(amount){
+  stats.xp += amount;
+  const today = new Date().toDateString();
+  if(stats.lastPlayDate !== today){
+    const yesterday = new Date(Date.now()-86400000).toDateString();
+    stats.streak = (stats.lastPlayDate === yesterday) ? stats.streak + 1 : 1;
+    stats.lastPlayDate = today;
+  }
+  saveStats(stats);
+  renderStatsBar();
+}
+
+function renderStatsBar(){
+  document.getElementById('statTotal').textContent = words.length;
+  document.getElementById('statStreak').textContent = stats.streak || 0;
+  document.getElementById('statXP').textContent = stats.xp || 0;
+  document.getElementById('statLevel').textContent = levelFromXP(stats.xp||0).level;
+}
+
+/* ============== TOAST ============== */
+let toastTimer;
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ============== NAV ============== */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+    if(btn.dataset.view === 'list') renderList();
+    if(btn.dataset.view === 'add') renderRecent();
+    if(btn.dataset.view === 'practice') backToModeSelect();
+  });
+});
+
+/* ============== ADD WORD ============== */
+document.getElementById('btnAddWord').addEventListener('click', ()=>{
+  const en = document.getElementById('inEn').value.trim();
+  const tr = document.getElementById('inTr').value.trim();
+  const ex = document.getElementById('inEx').value.trim();
+  const tag = document.getElementById('inTag').value.trim();
+  if(!en || !tr){ showToast('⚠️ İngilizce kelime ve Türkçe anlamı zorunludur.'); return; }
+  words.unshift({id:uid(), en, tr, ex, tag, box:1, lastSeen:null});
+  saveWords(words);
+  document.getElementById('inEn').value='';
+  document.getElementById('inTr').value='';
+  document.getElementById('inEx').value='';
+  document.getElementById('inTag').value='';
+  showToast('✅ "' + en + '" eklendi!');
+  renderRecent();
+  renderStatsBar();
+});
+
+function wordCardHTML(w, showActions){
+  const exHTML = w.ex ? `<div class="ex">"${escapeHTML(w.ex)}"</div>` : '';
+  const tagHTML = w.tag ? `<span class="tag">${escapeHTML(w.tag)}</span>` : '';
+  const actions = showActions ? `
+    <div class="card-actions">
+      <button class="btn secondary small" onclick="editWord('${w.id}')">✏️ Düzenle</button>
+      <button class="btn ghost small" onclick="deleteWord('${w.id}')">🗑️ Sil</button>
+    </div>` : '';
+  return `<div class="word-card">
+    <span class="box-badge">Kutu ${w.box||1}</span>
+    <div class="en">${escapeHTML(w.en)}</div>
+    <div class="tr">${escapeHTML(w.tr)}</div>
+    ${exHTML}
+    ${tagHTML}
+    ${actions}
+  </div>`;
+}
+function escapeHTML(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function renderRecent(){
+  const grid = document.getElementById('recentGrid');
+  const recent = words.slice(0,6);
+  grid.innerHTML = recent.length ? recent.map(w=>wordCardHTML(w,true)).join('') :
+    `<div class="empty-state" style="grid-column:1/-1;"><div class="big">📭</div>Henüz kelime eklemedin. Yukarıdan ilk kelimeni ekle!</div>`;
+}
+
+function deleteWord(id){
+  if(!confirm('Bu kelimeyi silmek istediğine emin misin?')) return;
+  words = words.filter(w=>w.id!==id);
+  saveWords(words);
+  renderRecent(); renderList(); renderStatsBar();
+  showToast('🗑️ Kelime silindi.');
+}
+
+function editWord(id){
+  const w = words.find(x=>x.id===id);
+  if(!w) return;
+  const en = prompt('İngilizce kelime:', w.en);
+  if(en===null) return;
+  const tr = prompt('Türkçe anlamı:', w.tr);
+  if(tr===null) return;
+  const ex = prompt('Örnek cümle (opsiyonel):', w.ex||'');
+  const tag = prompt('Kategori/etiket (opsiyonel):', w.tag||'');
+  w.en = en.trim()||w.en; w.tr = tr.trim()||w.tr; w.ex = (ex||'').trim(); w.tag = (tag||'').trim();
+  saveWords(words);
+  renderRecent(); renderList();
+  showToast('✏️ Kelime güncellendi.');
+}
+
+/* ============== LIST VIEW ============== */
+function renderTagFilter(){
+  const sel = document.getElementById('filterTag');
+  const tags = [...new Set(words.map(w=>w.tag).filter(Boolean))];
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Tüm kategoriler</option>' + tags.map(t=>`<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join('');
+  sel.value = current;
+}
+function renderList(){
+  renderTagFilter();
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const tagFilter = document.getElementById('filterTag').value;
+  const filtered = words.filter(w=>{
+    const matchQ = !q || w.en.toLowerCase().includes(q) || w.tr.toLowerCase().includes(q);
+    const matchTag = !tagFilter || w.tag === tagFilter;
+    return matchQ && matchTag;
+  });
+  const grid = document.getElementById('allGrid');
+  grid.innerHTML = filtered.length ? filtered.map(w=>wordCardHTML(w,true)).join('') :
+    `<div class="empty-state" style="grid-column:1/-1;"><div class="big">🔍</div>Sonuç bulunamadı.</div>`;
+}
+document.getElementById('searchInput').addEventListener('input', renderList);
+document.getElementById('filterTag').addEventListener('change', renderList);
+
+/* ============== PRACTICE: SHARED ============== */
+let session = { mode:null, queue:[], index:0, correct:0, wrong:0, xp:0 };
+
+document.querySelectorAll('.mode-card').forEach(card=>{
+  card.addEventListener('click', ()=> startMode(card.dataset.mode));
+});
+document.getElementById('btnExitPractice').addEventListener('click', backToModeSelect);
+document.getElementById('btnBackModes').addEventListener('click', backToModeSelect);
+document.getElementById('btnRetry').addEventListener('click', ()=> startMode(session.mode));
+
+function backToModeSelect(){
+  document.getElementById('modeSelectPanel').style.display='block';
+  document.getElementById('practicePanel').style.display='none';
+  document.getElementById('resultPanel').style.display='none';
+}
+
+function pickQueue(){
+  // weight by box: lower box = appears more often (Leitner-ish)
+  const pool = [];
+  words.forEach(w=>{
+    const weight = Math.max(1, 4 - (w.box||1));
+    for(let i=0;i<weight;i++) pool.push(w);
+  });
+  const unique = [...words];
+  shuffle(unique);
+  return unique;
+}
+function shuffle(arr){ for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; } return arr; }
+
+function startMode(mode){
+  if(words.length < (mode==='quiz'?4: mode==='match'?3:1)){
+    showToast('⚠️ Bu modu oynamak için daha fazla kelime ekle (en az ' + (mode==='quiz'?4:mode==='match'?3:1) + ').');
+    return;
+  }
+  session = { mode, queue: pickQueue().slice(0, Math.min(10, words.length)), index:0, correct:0, wrong:0, xp:0 };
+  document.getElementById('modeSelectPanel').style.display='none';
+  document.getElementById('resultPanel').style.display='none';
+  document.getElementById('practicePanel').style.display='block';
+  renderProgress();
+  if(mode==='flashcard') renderFlashcard();
+  if(mode==='quiz') renderQuiz();
+  if(mode==='match') renderMatch();
+  if(mode==='fill') renderFill();
+}
+
+function renderProgress(){
+  const total = session.mode==='match' ? 1 : session.queue.length;
+  const idx = session.mode==='match' ? 1 : session.index;
+  document.getElementById('progressFill').style.width = (total? (idx/total*100):0) + '%';
+  document.getElementById('progressLabel').textContent = session.mode==='match' ? 'Eşleştirme' : `${session.index}/${session.queue.length}`;
+}
+
+function leitnerUpdate(word, knewIt){
+  word.box = knewIt ? Math.min(3, (word.box||1)+1) : 1;
+  word.lastSeen = Date.now();
+  saveWords(words);
+}
+
+function endSession(){
+  document.getElementById('practicePanel').style.display='none';
+  document.getElementById('resultPanel').style.display='block';
+  const total = session.correct + session.wrong;
+  const pct = total ? Math.round(session.correct/total*100) : 0;
+  document.getElementById('resultScore').textContent = pct + '%';
+  document.getElementById('resultEmoji').textContent = pct>=80?'🏆':pct>=50?'🎉':'💪';
+  document.getElementById('resCorrect').textContent = session.correct;
+  document.getElementById('resWrong').textContent = session.wrong;
+  const earned = session.correct*10 + (pct===100?20:0);
+  document.getElementById('resXP').textContent = earned;
+  addXP(earned);
+  if(pct>=70) launchConfetti();
+}
+
+/* ---------- FLASHCARD ---------- */
+function renderFlashcard(){
+  if(session.index >= session.queue.length){ endSession(); return; }
+  renderProgress();
+  const w = session.queue[session.index];
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <div class="flip-scene">
+      <div class="flip-card" id="flipCard">
+        <div class="face front">
+          <div class="word">${escapeHTML(w.en)}</div>
+          <div class="sub">Anlamını görmek için karta tıkla 👆</div>
+        </div>
+        <div class="face back">
+          <div class="word">${escapeHTML(w.tr)}</div>
+          ${w.ex? `<div class="ex">"${escapeHTML(w.ex)}"</div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="flash-actions" id="flashActions" style="display:none;">
+      <button class="know-btn no" id="knowNo">❌ Bilmiyordum</button>
+      <button class="know-btn yes" id="knowYes">✅ Biliyordum</button>
+    </div>
+  `;
+  const fc = document.getElementById('flipCard');
+  fc.addEventListener('click', ()=>{
+    fc.classList.toggle('flipped');
+    document.getElementById('flashActions').style.display = fc.classList.contains('flipped') ? 'flex':'none';
+  });
+  document.getElementById('knowYes').addEventListener('click', ()=>{ leitnerUpdate(w,true); session.correct++; session.index++; renderFlashcard(); });
+  document.getElementById('knowNo').addEventListener('click', ()=>{ leitnerUpdate(w,false); session.wrong++; session.index++; renderFlashcard(); });
+}
+
+/* ---------- QUIZ ---------- */
+function renderQuiz(){
+  if(session.index >= session.queue.length){ endSession(); return; }
+  renderProgress();
+  const w = session.queue[session.index];
+  let wrongPool = words.filter(x=>x.id!==w.id);
+  shuffle(wrongPool);
+  const opts = shuffle([w, ...wrongPool.slice(0,3)]).map(o=>o.tr);
+  const stage = document.getElementById('stage');
+  stage.innerHTML = `
+    <div class="quiz-q">${escapeHTML(w.en)}</div>
+    <div class="quiz-options" id="quizOpts"></div>
+  `;
+  const optWrap = document.getElementById('quizOpts');
+  opts.forEach(opt=>{
+    const b = document.createElement('button');
+    b.className='opt-btn'; b.textContent = opt;
+    b.addEventListener('click', ()=>{
+      document.querySelectorAll('.opt-btn').forEach(x=>x.disabled=true);
+      const isCorrect = opt === w.tr;
+      b.classList.add(isCorrect?'correct':'wrong');
+      if(!isCorrect){
+        [...optWrap.children].find(x=>x.textContent===w.tr).classList.add('correct');
+      }
+      leitnerUpdate(w, isCorrect);
+      isCorrect ? session.correct++ : session.wrong++;
+      setTimeout(()=>{ session.index++; renderQuiz(); }, 850);
+    });
+    optWrap.appendChild(b);
+  });
+}
+
+/* ---------- MATCH ---------- */
+function renderMatch(){
+  const stage = document.getElementById('stage');
+  const set = shuffle([...session.queue]).slice(0, Math.min(5, session.queue.length));
+  const leftItems = shuffle([...set]);
+  const rightItems = shuffle([...set]);
+  let selectedLeft = null, selectedRight = null, matchedCount = 0;
+  document.getElementById('progressLabel').textContent = `0/${set.length} eşleşti`;
+  stage.innerHTML = `<div class="match-board">
+    <div class="match-col" id="matchLeft"></div>
+    <div class="match-col" id="matchRight"></div>
+  </div>`;
+  const leftCol = document.getElementById('matchLeft');
+  const rightCol = document.getElementById('matchRight');
+  leftItems.forEach(w=>{
+    const el = document.createElement('div');
+    el.className='match-item'; el.textContent = w.en; el.dataset.id = w.id;
+    el.addEventListener('click', ()=>{
+      if(el.classList.contains('matched')) return;
+      document.querySelectorAll('#matchLeft .match-item').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected'); selectedLeft = el;
+      tryMatch();
+    });
+    leftCol.appendChild(el);
+  });
+  rightItems.forEach(w=>{
+    const el = document.createElement('div');
+    el.className='match-item'; el.textContent = w.tr; el.dataset.id = w.id;
+    el.addEventListener('click', ()=>{
+      if(el.classList.contains('matched')) return;
+      document.querySelectorAll('#matchRight .match-item').forEach(x=>x.classList.remove('selected'));
+      el.classList.add('selected'); selectedRight = el;
+      tryMatch();
+    });
+    rightCol.appendChild(el);
+  });
+  function tryMatch(){
+    if(!selectedLeft || !selectedRight) return;
+    if(selectedLeft.dataset.id === selectedRight.dataset.id){
+      selectedLeft.classList.add('matched'); selectedRight.classList.add('matched');
+      const w = words.find(x=>x.id===selectedLeft.dataset.id);
+      leitnerUpdate(w, true);
+      session.correct++; matchedCount++;
+      document.getElementById('progressLabel').textContent = `${matchedCount}/${set.length} eşleşti`;
+      selectedLeft=null; selectedRight=null;
+      if(matchedCount === set.length){ setTimeout(endSession, 500); }
+    } else {
+      selectedLeft.classList.add('shake'); selectedRight.classList.add('shake');
+      session.wrong++;
+      setTimeout(()=>{
+        selectedLeft && selectedLeft.classList.remove('selected','shake');
+        selectedRight && selectedRight.classList.remove('selected','shake');
+        selectedLeft=null; selectedRight=null;
+      }, 400);
+    }
+  }
+}
+
+/* ---------- FILL BLANK ---------- */
+function renderFill(){
+  const withEx = session.queue.filter(w=>w.ex && w.ex.toLowerCase().includes(w.en.toLowerCase().split(' ')[0]));
+  const pool = withEx.length ? withEx : session.queue;
+  if(session.index >= pool.length){ endSession(); return; }
+  session.fillPool = pool;
+  renderProgressFill(pool);
+  const w = pool[session.index];
+  const stage = document.getElementById('stage');
+  let sentenceHTML;
+  if(w.ex){
+    const re = new RegExp(w.en.split(' ')[0], 'i');
+    sentenceHTML = w.ex.replace(re, '<b>_____</b>');
+  } else {
+    sentenceHTML = `Türkçesi <b>"${escapeHTML(w.tr)}"</b> olan kelimeyi yaz: <b>_____</b>`;
+  }
+  stage.innerHTML = `
+    <div class="fill-sentence">${sentenceHTML}</div>
+    <div style="color:var(--ink-dim);font-size:13px;margin-bottom:14px;">İpucu: Türkçe anlamı — <b style="color:var(--turquoise)">${escapeHTML(w.tr)}</b></div>
+    <div class="fill-input-row">
+      <input type="text" id="fillInput" placeholder="Kelimeyi yaz...">
+      <button class="btn" id="fillSubmit">Kontrol Et</button>
+    </div>
+    <div id="fillFeedback" style="margin-top:14px;font-weight:600;"></div>
+  `;
+  const input = document.getElementById('fillInput');
+  input.focus();
+  function check(){
+    const val = input.value.trim().toLowerCase();
+    const target = w.en.toLowerCase();
+    const isCorrect = val === target;
+    const fb = document.getElementById('fillFeedback');
+    fb.style.color = isCorrect ? 'var(--good)' : 'var(--bad)';
+    fb.textContent = isCorrect ? '✅ Doğru!' : `❌ Doğru cevap: ${w.en}`;
+    leitnerUpdate(w, isCorrect);
+    isCorrect ? session.correct++ : session.wrong++;
+    input.disabled = true; document.getElementById('fillSubmit').disabled = true;
+    setTimeout(()=>{ session.index++; renderFill(); }, 1100);
+  }
+  document.getElementById('fillSubmit').addEventListener('click', check);
+  input.addEventListener('keydown', e=>{ if(e.key==='Enter') check(); });
+}
+function renderProgressFill(pool){
+  document.getElementById('progressFill').style.width = (session.index/pool.length*100) + '%';
+  document.getElementById('progressLabel').textContent = `${session.index}/${pool.length}`;
+}
+
+/* ============== CONFETTI ============== */
+function launchConfetti(){
+  const colors = ['#8b5cf6','#2dd4bf','#fb923c','#ec4899','#34d399'];
+  for(let i=0;i<60;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[Math.floor(Math.random()*colors.length)];
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(c);
+    const duration = 1800 + Math.random()*1400;
+    c.animate([
+      {transform:`translateY(0) rotate(0deg)`, opacity:1},
+      {transform:`translateY(100vh) rotate(${360+Math.random()*360}deg)`, opacity:0}
+    ], {duration, easing:'cubic-bezier(.25,.46,.45,.94)'});
+    setTimeout(()=>c.remove(), duration);
+  }
+}
+
+/* ============== AMBIENT 3D-ISH BACKGROUND (lightweight canvas) ============== */
+(function(){
+  const canvas = document.getElementById('bgcanvas');
+  const ctx = canvas.getContext('2d');
+  let w,h, shapes=[];
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  const colors = ['rgba(139,92,246,0.35)','rgba(45,212,191,0.3)','rgba(251,146,60,0.25)','rgba(236,72,153,0.25)'];
+  for(let i=0;i<14;i++){
+    shapes.push({
+      x: Math.random()*w, y: Math.random()*h,
+      r: 30 + Math.random()*70,
+      vx: (Math.random()-0.5)*0.25,
+      vy: (Math.random()-0.5)*0.25,
+      color: colors[i%colors.length],
+      pulse: Math.random()*Math.PI*2
+    });
+  }
+  function tick(){
+    ctx.clearRect(0,0,w,h);
+    shapes.forEach(s=>{
+      s.x += s.vx; s.y += s.vy; s.pulse += 0.01;
+      if(s.x < -100) s.x = w+100; if(s.x > w+100) s.x = -100;
+      if(s.y < -100) s.y = h+100; if(s.y > h+100) s.y = -100;
+      const r = s.r + Math.sin(s.pulse)*6;
+      const grad = ctx.createRadialGradient(s.x,s.y,0,s.x,s.y,r);
+      grad.addColorStop(0, s.color);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath(); ctx.arc(s.x,s.y,r,0,Math.PI*2); ctx.fill();
+    });
+    requestAnimationFrame(tick);
+  }
+  if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    tick();
+  }
+})();
+
+/* ============== INIT ============== */
+renderStatsBar();
+renderRecent();
+renderList();
+</script>
+</body>
+</html>
